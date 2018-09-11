@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
+const commonPaths = require('./common-paths');
 module.exports = {
   mode:'development',
   devServer: {

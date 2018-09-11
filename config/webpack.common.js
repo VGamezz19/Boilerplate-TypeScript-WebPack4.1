@@ -29,7 +29,7 @@ module.exports = {
       },
       // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
       { 
-        test: /\.tsx?$/,
+        test: /\.(ts|tsx)$/,
         loader: "awesome-typescript-loader"
       },
       {
