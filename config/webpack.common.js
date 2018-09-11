@@ -1,7 +1,6 @@
 const commonPaths = require('./common-paths');
 const { ProgressPlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 module.exports = {
   output: {
@@ -19,13 +18,12 @@ module.exports = {
   },
   module: {
     rules: [
-      //TSLINT- webpack stopper
-      {
-          enforce: 'pre',
-          test: /\.ts$/,
-          exclude: /(node_modules|scripts|assets)/,
-          loader: 'tslint-loader',
-      },
+      // {
+      //     enforce: 'pre',
+      //     test: /\.ts$/,
+      //     exclude: /(node_modules|scripts|assets)/,
+      //     loader: 'tslint-loader',
+      // },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       { 
         enforce: "pre",
@@ -37,8 +35,7 @@ module.exports = {
       //   test: /\.(ts|tsx)$/,
       //   use: ['react-hot-loader/webpack', "babel-loader", "awesome-typescript-loader"],
       //   exclude: /node_modules/
-      // },
- 
+      // }
       {
         test:  /\.(ts|tsx)$/,
         exclude: /node_modules/,
@@ -64,7 +61,6 @@ module.exports = {
           }
         }
       },
-      
       {
         test: /\.html$/,
         loader: 'raw-loader'
@@ -78,7 +74,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new ForkTsCheckerWebpackPlugin(),
     new ProgressPlugin(),
     new HtmlWebpackPlugin({
       template: `${commonPaths.public}/index.html`,
