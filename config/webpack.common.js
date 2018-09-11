@@ -3,39 +3,23 @@ const { ProgressPlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+  // Common Output configuration
   output: {
     path: commonPaths.build,
     filename: '[name].js',
     chunkFilename: 'chunks/[id].[chunkhash].js',
   },
-  // alias: {
-  //   pos: path.resolve(__dirname, "src"),
-  //   cmp: path.resolve(__dirname, "src/components"),
-  //   assets: path.resolve(__dirname, "assets"),
-  // },
   resolve: {
     extensions: ['.ts', '.js', '.tsx', '.css', '.scss']
   },
   module: {
     rules: [
-      // {
-      //     enforce: 'pre',
-      //     test: /\.ts$/,
-      //     exclude: /(node_modules|scripts|assets)/,
-      //     loader: 'tslint-loader',
-      // },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       { 
         enforce: "pre",
         test: /\.js$/,
         loader: "source-map-loader" 
       },
-      // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-      // {
-      //   test: /\.(ts|tsx)$/,
-      //   use: ['react-hot-loader/webpack', "babel-loader", "awesome-typescript-loader"],
-      //   exclude: /node_modules/
-      // }
       {
         test:  /\.(ts|tsx)$/,
         exclude: /node_modules/,
@@ -47,24 +31,22 @@ module.exports = {
             presets: [
               [
                 "@babel/preset-env",
-                { targets: { browsers: "last 2 versions" } } // or whatever your project requires
+                // { targets: { browsers: "last 2 versions" } } // or whatever your project requires
               ],
               "@babel/preset-typescript",
               "@babel/preset-react"
             ],
             plugins: [
-              // plugin-proposal-decorators is only needed if you're using experimental decorators in TypeScript
+              // // plugin-proposal-decorators is only needed if you're using experimental decorators in TypeScript
               // ["@babel/plugin-proposal-decorators", { legacy: true }],
+              // support proposal class
               ["@babel/plugin-proposal-class-properties", { loose: true }],
               "react-hot-loader/babel"
             ]
           }
         }
       },
-      {
-        test: /\.html$/,
-        loader: 'raw-loader'
-      },
+      { test: /\.html$/, loader: 'raw-loader' },
       { test: /\.png$/, loader: "url-loader?limit=100000" },
       { test: /\.jpg$/, loader: "file-loader" },
       { test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
