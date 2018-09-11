@@ -1,14 +1,19 @@
 const commonPaths = require('./common-paths');
 const { ProgressPlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 module.exports = {
-  entry: commonPaths.src,
   output: {
     path: commonPaths.build,
     filename: '[name].js',
     chunkFilename: 'chunks/[id].[chunkhash].js',
   },
+  // alias: {
+  //   pos: path.resolve(__dirname, "src"),
+  //   cmp: path.resolve(__dirname, "src/components"),
+  //   assets: path.resolve(__dirname, "assets"),
+  // },
   resolve: {
     extensions: ['.ts', '.js', '.tsx', '.css', '.scss']
   },
@@ -28,27 +33,52 @@ module.exports = {
         loader: "source-map-loader" 
       },
       // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-      { 
-        test: /\.(ts|tsx)$/,
-        loader: "awesome-typescript-loader"
+      // {
+      //   test: /\.(ts|tsx)$/,
+      //   use: ['react-hot-loader/webpack', "babel-loader", "awesome-typescript-loader"],
+      //   exclude: /node_modules/
+      // },
+ 
+      {
+        test:  /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            cacheDirectory: true,
+            babelrc: false,
+            presets: [
+              [
+                "@babel/preset-env",
+                { targets: { browsers: "last 2 versions" } } // or whatever your project requires
+              ],
+              "@babel/preset-typescript",
+              "@babel/preset-react"
+            ],
+            plugins: [
+              // plugin-proposal-decorators is only needed if you're using experimental decorators in TypeScript
+              // ["@babel/plugin-proposal-decorators", { legacy: true }],
+              ["@babel/plugin-proposal-class-properties", { loose: true }],
+              "react-hot-loader/babel"
+            ]
+          }
+        }
       },
+      
       {
         test: /\.html$/,
         loader: 'raw-loader'
       },
-      {
-        test: /\.(png|jpg|svg|gif)$/,
-        use: 'file-loader'
-      },
-      {
-        test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: [
-          'file-loader'
-        ]
-      }
+      { test: /\.png$/, loader: "url-loader?limit=100000" },
+      { test: /\.jpg$/, loader: "file-loader" },
+      { test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/octet-stream' },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader' },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=image/svg+xml' }  
     ]
   },
   plugins: [
+    new ForkTsCheckerWebpackPlugin(),
     new ProgressPlugin(),
     new HtmlWebpackPlugin({
       template: `${commonPaths.public}/index.html`,

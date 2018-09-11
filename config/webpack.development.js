@@ -2,12 +2,26 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const commonPaths = require('./common-paths');
 module.exports = {
+  entry: {
+    vendor: [
+      // Required to support async/await
+      '@babel/polyfill',
+    ],
+    main: [
+      commonPaths.src,
+    ]
+  },
   mode:'development',
   devServer: {
-    port: 3000,
+    port: '3000',
+    // Change it if other port needs to be used
     historyApiFallback: true,
-    inline: true,
-    hot: true
+    hot: true,
+    // enable HMR on the server
+    // contentBase: commonPaths.src,
+    // // match the output path
+    // publicPath: '/'
+    // // match the output `publicPath`
   },
   // https://webpack.js.org/configuration/devtool/
   devtool: 'source-map',
@@ -20,7 +34,33 @@ module.exports = {
           fallback: 'style-loader',
           use: ['css-loader', 'sass-loader']
         })
-      }]
+      },
+      {
+        test:  /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            cacheDirectory: true,
+            babelrc: false,
+            presets: [
+              [
+                "@babel/preset-env",
+                { targets: { browsers: "last 2 versions" } } // or whatever your project requires
+              ],
+              "@babel/preset-typescript",
+              "@babel/preset-react"
+            ],
+            plugins: [
+              // plugin-proposal-decorators is only needed if you're using experimental decorators in TypeScript
+              // ["@babel/plugin-proposal-decorators", { legacy: true }],
+              ["@babel/plugin-proposal-class-properties", { loose: true }],
+              "react-hot-loader/babel"
+            ]
+          }
+        }
+      }
+    ]
   },
   plugins: [
     // new webpack.NamedModulesPlugin(),
